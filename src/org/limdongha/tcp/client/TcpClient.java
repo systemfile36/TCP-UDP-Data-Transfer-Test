@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * 실험을 위한 TCP 클라이언트
+ * @author limdongha
  */
 public class TcpClient {
     public static void main(String[] args) {
@@ -53,7 +54,7 @@ public class TcpClient {
                 timer.start();
 
                 //입력받은 정보로 소켓을 열고, 출력 스트림을 버퍼 보조 스트림으로 가져온다.
-                try(Socket socket = new Socket(new Proxy(Proxy.Type.SOCKS, socketAddress));
+                try(Socket socket = new Socket(socketAddress.getHostString(), socketAddress.getPort());
                     BufferedOutputStream output = new BufferedOutputStream(socket.getOutputStream())) {
 
                     //전송할 데이터 만큼 모두 보냈는지 확인할 목적
@@ -91,7 +92,7 @@ public class TcpClient {
 
         System.out.println("실험 종료. 결과 파일 작성 중...");
 
-        try(CsvWriter<TestRecord> csvWriter = new CsvWriter<>("testResult.csv")) {
+        try(CsvWriter<TestRecord> csvWriter = new CsvWriter<>("testResult_client.csv")) {
             csvWriter.writeAll(testRecordList);
             csvWriter.flush();
         } catch(IOException e) {
@@ -112,7 +113,7 @@ public class TcpClient {
             implements CsvConvertible {
         @Override
         public String toCsvString() {
-            return dataSize + "," + elapsedTime + "," + totalBytes;
+            return dataSize + "," + elapsedTime + "," + totalBytes + "\n";
         }
 
         @Override

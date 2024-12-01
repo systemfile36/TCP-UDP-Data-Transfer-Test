@@ -50,7 +50,7 @@ public class TestUtils {
         while(true) {
             try(Scanner sc = new Scanner(System.in)) {
 
-                System.out.println("서버 IP 주소와 포트 번호를 입력해주세요. ex) 127.0.0.1 5000 \n: ");
+                System.out.print("서버 IP 주소와 포트 번호를 입력해주세요. ex) 127.0.0.1 5000 \n: ");
                 String[] input = sc.nextLine().split(" ");
 
                 //flush '\n'
@@ -61,6 +61,8 @@ public class TestUtils {
                 //파싱
                 serverIp = input[0];
                 port = Integer.parseInt(input[1]);
+
+                System.out.printf("IP : %s, Port : %d\n", serverIp, port);
 
                 return new InetSocketAddress(serverIp, port);
 

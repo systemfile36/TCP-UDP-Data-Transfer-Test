@@ -42,6 +42,8 @@ public class CsvWriter<T extends CsvConvertible> implements Closeable, AutoClose
             throw new IOException("invalidate csv");
         }
 
+        writer.write(String.join(",", col.get(0).getColumnNames()) + "\n");
+
         for(CsvConvertible value : col) {
             writer.write(value.toCsvString());
         }
@@ -49,6 +51,9 @@ public class CsvWriter<T extends CsvConvertible> implements Closeable, AutoClose
 
 
     private boolean validate(List<T> col) {
+        //비어있는지 체크
+        if(col.isEmpty()) return false;
+
         //열 갯수
         long columnCount = col.get(0).getColumnCount();
 
