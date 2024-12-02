@@ -30,3 +30,4 @@ bin/
 
 #Result File
 *.csv
+*.txt
