@@ -21,6 +21,9 @@ public class TcpClient {
         //접속할 서버의 아이피와 포트 번호를 사용자에게서 입력 받음
         InetSocketAddress socketAddress = TestUtils.getSocketAddressFromStdIn();
 
+        //접속할 서버에 대해 `tracert`를 실행
+        TestUtils.execTraceRouteAndWait(socketAddress.getHostString());
+
         //테스트할 데이터 단위 모음
         List<Integer> dataSizes = TestUtils.getDataSizes();
 

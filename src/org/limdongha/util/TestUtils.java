@@ -1,10 +1,12 @@
 package org.limdongha.util;
 
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -127,6 +129,34 @@ public class TestUtils {
     }
 
 
+    /**
+     * IP 주소를 받아서 해당 IP에 대해 tracert를 실행한다.
+     * 종료될 때까지 블로킹한 후, 파일로 출력한다.<br/>
+     * 실험 환경을 출력하기 위함이다.
+     * @param ipAddress - tracert를 실행할 IP 주소
+     */
+    public static void execTraceRouteAndWait(String ipAddress) {
+        try {
+            Process process = Runtime.getRuntime().exec("tracert " + ipAddress);
 
+            //명령어를 실행한 프로세스의 출력을 입력 스트림으로 가져온 후, 문자 보조스트림과 버퍼 스트림으로 감싼다.
+            //파일 출력 스트림을 받아온다.
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                BufferedWriter writer = Files.newBufferedWriter(Path.of("tracertResult.txt"), StandardCharsets.UTF_8)) {
+
+                String line;
+                while((line = reader.readLine()) != null) {
+                    writer.write(line + "\n");
+                }
+
+            }
+
+            int exitCode = process.waitFor();
+            System.out.println("Exit code : " + exitCode);
+
+        } catch (Exception e) {
+            System.err.println("오류 발생... : " + e.getMessage());
+        }
+    }
 
 }
