@@ -2,7 +2,9 @@ package org.limdongha.util;
 
 
 import java.io.*;
+import java.net.DatagramPacket;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -16,6 +18,16 @@ import java.util.Scanner;
  * @author limdongha
  */
 public class TestUtils {
+
+    /**
+     * UDP 클라이언트와 서버가 사용할 종료 메시지
+     */
+    public static String END_MESSAGE = "END";
+
+    /**
+     * UDP 클라이언트와 서버가 사용할 확인 응답 메시지
+     */
+    public static String ACK_MESSAGE = "ACK";
 
     /**
      * 테스트를 위한 데이터 사이즈 들의 리스트를 반환한다.
@@ -93,9 +105,9 @@ public class TestUtils {
             int bufferSize = 1024 * 1024 * 100;
             byte[] buffer = new byte[bufferSize];
 
-            //랜덤값 생성
+            //순차적인 값 생성
             for(int i = 0; i < buffer.length; i++) {
-                buffer[i] = (byte)(Math.random() * 255);
+                buffer[i] = (byte)(i % 256);
             }
 
             //쓴 바이트 수
@@ -157,6 +169,35 @@ public class TestUtils {
         } catch (Exception e) {
             System.err.println("오류 발생... : " + e.getMessage());
         }
+    }
+
+    /**
+     * 콘솔에 특정 문자열 입력이 감지되면 서버 소켓을 닫는 스레드를 생성해서 반환한다. <br/>
+     * 'q`를 입력하고 엔터키를 입력하면, 인자로 받은 소켓을 close 하여 예외를 발생시킨다.
+     * @param serverSocket - 입력이 감지될 시, close할 소켓
+     * @return 스레드 객체.
+     */
+    public static Thread getCloseControlThread(Closeable serverSocket) {
+        Thread thread = new Thread(() -> {
+            try(Scanner scanner = new Scanner(System.in)) {
+                while(true) {
+                    if(scanner.hasNextLine()) {
+                        String input = scanner.nextLine();
+                        if("q".equalsIgnoreCase(input)) {
+                            //서버소켓 강제로 닫기
+                            serverSocket.close();
+                            System.out.println("서버가 종료됩니다...");
+                            break;
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        //데몬 스레드로 설정하고 시작
+        thread.setDaemon(true);
+        return thread;
     }
 
 }

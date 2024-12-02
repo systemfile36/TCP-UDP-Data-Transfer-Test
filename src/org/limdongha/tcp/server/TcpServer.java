@@ -2,6 +2,7 @@ package org.limdongha.tcp.server;
 
 import org.limdongha.util.CsvConvertible;
 import org.limdongha.util.CsvWriter;
+import org.limdongha.util.TestUtils;
 import org.limdongha.util.Timer;
 
 import java.io.IOException;
@@ -19,8 +20,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author limdongha
  */
 public class TcpServer {
-    //종료 제어를 위한 스레드-세이프한 원자값 객체
-    private static final AtomicBoolean stop = new AtomicBoolean(false);
 
     public static void main(String[] args) {
         final int port = 5000;
@@ -37,11 +36,11 @@ public class TcpServer {
             System.out.println("Server running on " + port);
 
             //키보드 입력을 감지해서, 소켓을 강제로 종료시키는 스레드
-            Thread thread = getCloseControlThread(serverSocket);
+            Thread thread = TestUtils.getCloseControlThread(serverSocket);
             thread.start();
 
             //서버가 종료될 때까지 무한 반복
-            while(!stop.get()) {
+            while(true) {
                 //연결 대기...
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("클라이언트 연결 : " + clientSocket.getInetAddress());
@@ -94,33 +93,6 @@ public class TcpServer {
 
 
 
-    }
-
-    /**
-     * 키보드에서 특정 입력이 감지되면 서버를 종료하는 스레드를 반환한다.
-     * @return 스레드 객체.
-     */
-    private static Thread getCloseControlThread(ServerSocket serverSocket) {
-        Thread thread = new Thread(() -> {
-            try(Scanner scanner = new Scanner(System.in)) {
-                while(!stop.get()) {
-                    if(scanner.hasNextLine()) {
-                        String input = scanner.nextLine();
-                        if("q".equalsIgnoreCase(input)) {
-                            stop.compareAndSet(false, true);
-                            //서버소켓 강제로 닫기
-                            serverSocket.close();
-                            System.out.println("서버가 종료됩니다...");
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        //데몬 스레드로 설정하고 시작
-        thread.setDaemon(true);
-        return thread;
     }
 
     public record TestRecord(LocalDateTime receivedAt, long elapsedTime, long totalBytes) implements CsvConvertible {
