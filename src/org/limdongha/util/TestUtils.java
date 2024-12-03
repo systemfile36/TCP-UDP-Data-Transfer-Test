@@ -209,7 +209,7 @@ public class TestUtils {
     public static String getFormattedDateTime() {
         LocalDateTime resultTime = LocalDateTime.now();
 
-        return resultTime.format(DateTimeFormatter.ofPattern("(yyyy-MM-dd HH:mm:ss)"));
+        return resultTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH_mm_ss_"));
     }
 
 }

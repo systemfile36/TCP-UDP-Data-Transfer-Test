@@ -92,8 +92,8 @@ public class UdpClient {
                 DatagramPacket endPacket = new DatagramPacket(endMessage, endMessage.length, socketAddress.getAddress(), socketAddress.getPort());
 
                 try {
-                    //10초 대기
-                    Thread.sleep(10000);
+                    //20초 대기
+                    Thread.sleep(20000);
                 } catch(InterruptedException e) {
 
                 }
