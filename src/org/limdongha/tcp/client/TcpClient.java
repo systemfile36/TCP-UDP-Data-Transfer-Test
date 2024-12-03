@@ -9,6 +9,8 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,7 +97,7 @@ public class TcpClient {
 
         System.out.println("실험 종료. 결과 파일 작성 중...");
 
-        try(CsvWriter<TestRecord> csvWriter = new CsvWriter<>("testResult_client.csv")) {
+        try(CsvWriter<TestRecord> csvWriter = new CsvWriter<>(TestUtils.getFormattedDateTime() + "testResult_client.csv")) {
             csvWriter.writeAll(testRecordList);
             csvWriter.flush();
         } catch(IOException e) {

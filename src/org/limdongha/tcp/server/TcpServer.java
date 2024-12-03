@@ -80,7 +80,7 @@ public class TcpServer {
         } finally {
             System.out.println("실험 종료. 결과 파일 작성 중...");
 
-            try(CsvWriter<TestRecord> csvWriter = new CsvWriter<>("testResult_server.csv")) {
+            try(CsvWriter<TestRecord> csvWriter = new CsvWriter<>(TestUtils.getFormattedDateTime() + "testResult_server.csv")) {
                 csvWriter.writeAll(testRecordList);
                 csvWriter.flush();
             } catch(IOException e) {

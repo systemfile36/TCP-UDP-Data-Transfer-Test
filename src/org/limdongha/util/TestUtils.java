@@ -9,6 +9,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -198,6 +200,16 @@ public class TestUtils {
         //데몬 스레드로 설정하고 시작
         thread.setDaemon(true);
         return thread;
+    }
+
+    /**
+     * 현재 시간을 포맷팅한 문자열을 반환한다.
+     * @return
+     */
+    public static String getFormattedDateTime() {
+        LocalDateTime resultTime = LocalDateTime.now();
+
+        return resultTime.format(DateTimeFormatter.ofPattern("(yyyy-MM-dd HH:mm:ss)"));
     }
 
 }
